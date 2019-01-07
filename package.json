@@ -1,0 +1,38 @@
+{
+  "name": "procedural-project",
+  "version": "1.0.0",
+  "description": "three.js + webvr + typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --inline --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davjo664/procedural-project"
+  },
+  "keywords": [],
+  "author": "David Johansson",
+  "license": "MIT",
+  "homepage": "https://github.com/davjo664/procedural-project#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "latest",
+    "browser-sync": "latest",
+    "browser-sync-webpack-plugin": "latest",
+    "css-loader": "latest",
+    "extract-text-webpack-plugin": "latest",
+    "html-webpack-plugin": "latest",
+    "json-loader": "latest",
+    "progress-bar-webpack-plugin": "latest",
+    "style-loader": "latest",
+    "typescript": "latest",
+    "webpack": "latest",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "latest"
+  },
+  "dependencies": {
+    "@types/three": "latest",
+    "three": "latest",
+    "three-obj-mtl-loader": "^1.0.3"
+  }
+}
