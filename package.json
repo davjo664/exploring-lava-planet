@@ -1,5 +1,5 @@
 {
-  "name": "procedural-project",
+  "name": "threejs-web-vr",
   "version": "1.0.0",
   "description": "three.js + webvr + typescript",
   "main": "index.js",
@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davjo664/procedural-project"
+    "url": "git+https://github.com/davjo664/threejs-web-vr"
   },
   "keywords": [],
   "author": "David Johansson",
   "license": "MIT",
-  "homepage": "https://github.com/davjo664/procedural-project#readme",
+  "homepage": "https://github.com/davjo664/threejs-web-vr#readme",
   "devDependencies": {
     "awesome-typescript-loader": "latest",
     "browser-sync": "latest",

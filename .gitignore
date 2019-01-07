@@ -42,3 +42,6 @@ yarn.lock
 
 # awesome-typescript
 .awcache
+
+# API key
+src/apikey.ts

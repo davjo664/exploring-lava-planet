@@ -12,7 +12,9 @@ const BrowserSyncPluginConfig = new BrowserSyncPlugin({
     host: 'localhost',
     port: 3000,
     proxy: 'http://localhost:8080/',
-    cors: true
+    cors: true,
+    logLevel: 'debug',
+    logConnections: true
 }, config = {
     reload: false,
     cors: true
