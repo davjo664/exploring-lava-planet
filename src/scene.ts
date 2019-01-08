@@ -8,6 +8,9 @@ export class Scene extends THREE.Scene {
         // let axis = new THREE.AxesHelper(2)
         // this.add(axis);
 
+        this.background = new THREE.Color( 0x050505 );
+	    // this.fog = new THREE.Fog( 0x050505, 2000, 4000 );
+
         this.add( new THREE.GridHelper( 10, 10 ) );
 
         // add lights

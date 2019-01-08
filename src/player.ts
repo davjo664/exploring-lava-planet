@@ -4,7 +4,10 @@ import * as THREE from 'three'
 export class Player extends THREE.Object3D {
     constructor(scene, camera) {
         super();
+        console.log("Player");
+        console.log(this);
         scene.add( this );
+        this.position.set(0,1500,0);
         this.add( camera );
     }
 
