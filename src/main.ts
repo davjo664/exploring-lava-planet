@@ -14,11 +14,13 @@ var SCREEN_HEIGHT = window.innerHeight;
 var camera, scene;
 var cameraOrtho, sceneRenderTarget;
 
+var collidableMeshList = [];
+
 var uniformsNormal,
 heightMap, normalMap,
 quadTarget;
 
-var vector = new THREE.Vector3();
+var vector = new THREE.Vector3(0,-1,0);
 
 var directionalLight, pointLight;
 
@@ -46,6 +48,7 @@ export class Main {
     private transformAux1: any;
     private uniformsNoise: any;
     private uniformsTerrain: any;
+    private raycaster: THREE.Raycaster;
     constructor(container) {
 
         this.clock = new THREE.Clock();
@@ -192,7 +195,7 @@ export class Main {
 
         this.uniformsTerrain[ 'shininess' ].value = 30;
 
-        this.uniformsTerrain[ 'uDisplacementScale' ].value = 500;
+        this.uniformsTerrain[ 'uDisplacementScale' ].value = 300;
 
         this.uniformsTerrain[ 'uRepeatOverlay' ].value.set( 6, 6 );
 
@@ -233,6 +236,8 @@ export class Main {
         BufferGeometryUtils.computeTangents( geometryTerrain );
 
         terrain = new THREE.Mesh( geometryTerrain, mlib[ 'terrain' ] );
+        terrain.name = "ground";
+        collidableMeshList.push(terrain);
         terrain.receiveShadow = true;
         terrain.castShadow = true;
         terrain.position.set( 0, 0, 0 );
@@ -262,6 +267,8 @@ export class Main {
         this.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( valNorm, 0, 1, 0.6, 3.5 );
 
         this.initPhysics();
+
+        this.raycaster = new THREE.Raycaster();
     
     }
 
@@ -309,6 +316,26 @@ export class Main {
     }
 
     render(): void {
+        
+        // if ( this.threeObject && this.threeObject.geometry ) {
+        //     var originPoint = this.threeObject.position.clone();
+        //     // console.log("hello");
+
+        //     const position = this.threeObject.geometry.attributes.position;
+        //     const vector = new THREE.Vector3();
+
+        //     for ( let i = 0, l = position.count; i < l; i ++ ) {
+        //         vector.fromBufferAttribute( position, i );
+        //         vector.applyMatrix4( this.threeObject.matrixWorld );
+        //         vector.sub( this.threeObject.position );
+
+        //         var ray = new THREE.Raycaster( originPoint, vector.clone().normalize() );
+        //         var collisionResults = ray.intersectObjects( collidableMeshList );
+        //     //     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+        //     //         console.log("HIT");
+        //     }
+        // }
+
         var delta = this.clock.getDelta();
         if (this.physicsWorld) {
             this.physicsWorld.stepSimulation( delta, 10 );
@@ -320,23 +347,34 @@ export class Main {
                 var q = this.transformAux1.getRotation();
                 this.threeObject.position.set( p.x(), p.y(), p.z() );
                 this.threeObject.quaternion.set( q.x(), q.y(), q.z(), q.w() );
-                if(p.y() > 100) {
-                    this.player.position.y = this.threeObject.position.y;
 
-                    if (this.uniformsNoise && this.uniformsTerrain && this.player.position) {
-                        this.uniformsNoise[ 'offset' ].value.y -= this.camera.getWorldDirection( vector ).z * 0.01;
-                        this.uniformsTerrain[ 'uOffset' ].value.y = 4 * this.uniformsNoise[ 'offset' ].value.y;
-            
-                        this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.01;
-                        this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
-            
-                        quadTarget.material = mlib[ 'heightmap' ];
-                        this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
-            
-                        quadTarget.material = mlib[ 'normal' ];
-                        this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
+
+                if(this.raycaster) {
+                    this.raycaster.set( this.player.position, new THREE.Vector3(0,-1,0) );
+                    var intersects = this.raycaster.intersectObject(terrain);
+                    // console.log(intersects);
+                    if (intersects.length > 0) {
+                        // console.log(this.player.position);
+                        this.player.position.y = this.threeObject.position.y;
+
+                        if (this.uniformsNoise && this.uniformsTerrain && this.player.position) {
+                            this.uniformsNoise[ 'offset' ].value.y -= this.camera.getWorldDirection( vector ).z * 0.01;
+                            this.uniformsTerrain[ 'uOffset' ].value.y = 4 * this.uniformsNoise[ 'offset' ].value.y;
+                
+                            this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.01;
+                            this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
+                
+                            quadTarget.material = mlib[ 'heightmap' ];
+                            this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
+                
+                            quadTarget.material = mlib[ 'normal' ];
+                            this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
+                        }
                     }
                 }
+                // if(p.y() > 100) {
+                    
+                // }
             }
         }
 
