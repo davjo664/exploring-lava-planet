@@ -5,7 +5,7 @@
  * - compute normals from heightmap
  */
 
-THREE.NormalMapShader = {
+let NormalMapShader = {
 
 	uniforms: {
 

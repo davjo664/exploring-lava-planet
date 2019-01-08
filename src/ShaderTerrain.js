@@ -3,7 +3,7 @@
  *
  */
 
-THREE.ShaderTerrain = {
+let ShaderTerrain = {
 
 	/* -------------------------------------------------------------------------
 	//	Dynamic terrain shader
@@ -189,46 +189,6 @@ THREE.ShaderTerrain = {
 
 						"totalDiffuseLight += directionalLights[ i ].color * dirDiffuseWeight;",
 						"totalSpecularLight += directionalLights[ i ].color * specular * dirSpecularWeight * dirDiffuseWeight;",
-
-					"}",
-
-				"#endif",
-
-				// hemisphere lights
-
-				"#if NUM_HEMI_LIGHTS > 0",
-
-					"vec3 hemiDiffuse  = vec3( 0.0 );",
-					"vec3 hemiSpecular = vec3( 0.0 );",
-
-					"for( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {",
-
-						"vec3 lVector = hemisphereLightDirection[ i ];",
-
-						// diffuse
-
-						"float dotProduct = dot( normal, lVector );",
-						"float hemiDiffuseWeight = 0.5 * dotProduct + 0.5;",
-
-						"totalDiffuseLight += mix( hemisphereLights[ i ].groundColor, hemisphereLights[ i ].skyColor, hemiDiffuseWeight );",
-
-						// specular (sky light)
-
-						"float hemiSpecularWeight = 0.0;",
-
-						"vec3 hemiHalfVectorSky = normalize( lVector + viewPosition );",
-						"float hemiDotNormalHalfSky = 0.5 * dot( normal, hemiHalfVectorSky ) + 0.5;",
-						"hemiSpecularWeight += specularTex.r * max( pow( hemiDotNormalHalfSky, shininess ), 0.0 );",
-
-						// specular (ground light)
-
-						"vec3 lVectorGround = -lVector;",
-
-						"vec3 hemiHalfVectorGround = normalize( lVectorGround + viewPosition );",
-						"float hemiDotNormalHalfGround = 0.5 * dot( normal, hemiHalfVectorGround ) + 0.5;",
-						"hemiSpecularWeight += specularTex.r * max( pow( hemiDotNormalHalfGround, shininess ), 0.0 );",
-
-						"totalSpecularLight += specular * mix( hemisphereLights[ i ].groundColor, hemisphereLights[ i ].skyColor, hemiDiffuseWeight ) * hemiSpecularWeight * hemiDiffuseWeight;",
 
 					"}",
 
