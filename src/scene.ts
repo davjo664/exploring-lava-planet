@@ -8,7 +8,7 @@ export class Scene extends THREE.Scene {
         // let axis = new THREE.AxesHelper(2)
         // this.add(axis);
 
-        this.background = new THREE.Color( 0x050505 );
+        // this.background = new THREE.Color( 0x050505 );
 	    // this.fog = new THREE.Fog( 0x050505, 2000, 4000 );
 
         this.add( new THREE.GridHelper( 10, 10 ) );
@@ -22,6 +22,6 @@ export class Scene extends THREE.Scene {
         ambient.position.set( -0.5, 0.75, -1 );
         this.add( ambient );
 
-        this.background = new THREE.Color( 0x222222 );
+        // this.background = new THREE.Color( 0x222222 );
     }
 }

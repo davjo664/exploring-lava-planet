@@ -35,6 +35,8 @@ var updateNoise = true;
 
 var mlib = {};
 
+var uniforms2;
+
 export class Main {
     private scene: Scene;
     private camera: Camera;
@@ -135,8 +137,9 @@ export class Main {
         this.uniformsNoise = {
 
             time: { value: 1.0 },
-            scale: { value: new THREE.Vector2( 1.5, 1.5 ) },
-            offset: { value: new THREE.Vector2( 0, 0 ) }
+            scale: { value: new THREE.Vector2( 3, 3 ) },
+            offset: { value: new THREE.Vector2( 0, 0 ) },
+            texture: { value: new THREE.TextureLoader().load( 'src/explosion.png' ) }
 
         };
 
@@ -199,6 +202,11 @@ export class Main {
 
         this.uniformsTerrain[ 'uRepeatOverlay' ].value.set( 6, 6 );
 
+        uniforms2 = {
+            time: { value: 1.0 },
+            texture: { value: new THREE.TextureLoader().load( 'src/explosion.png' ) }
+        }
+
         var params = [
             [ 'heightmap', 	document.getElementById( 'fragmentShaderNoise' ).textContent, 	vertexShader, this.uniformsNoise, false ],
             [ 'normal', 	normalShader.fragmentShader, normalShader.vertexShader, uniformsNormal, false ],
@@ -211,9 +219,7 @@ export class Main {
 
                 uniforms: params[ i ][ 3 ],
                 vertexShader: params[ i ][ 2 ],
-                fragmentShader: params[ i ][ 1 ],
-                lights: params[ i ][ 4 ],
-                fog: true
+                fragmentShader: params[ i ][ 1 ]
             } );
 
             mlib[ params[ i ][ 0 ] ] = material;
@@ -226,30 +232,29 @@ export class Main {
         quadTarget.position.z = - 500;
         quadTarget.receiveShadow = true;
         quadTarget.castShadow = true;
-        sceneRenderTarget.add( quadTarget );
+        // sceneRenderTarget.add( quadTarget );
 
         // TERRAIN MESH
 
-        var geometryTerrain = new THREE.PlaneBufferGeometry( 6000, 6000, 256, 256 );
+        var geometryTerrain = new THREE.PlaneBufferGeometry( 12000, 12000, 256, 256 );
         
         // @ts-ignore: Unreachable code error
         BufferGeometryUtils.computeTangents( geometryTerrain );
 
-        terrain = new THREE.Mesh( geometryTerrain, mlib[ 'terrain' ] );
+        terrain = new THREE.Mesh( geometryTerrain, mlib[ 'heightmap' ] );
         terrain.name = "ground";
-        collidableMeshList.push(terrain);
-        terrain.receiveShadow = true;
-        terrain.castShadow = true;
+        // terrain.receiveShadow = true;
+        // terrain.castShadow = true;
         terrain.position.set( 0, 0, 0 );
         terrain.rotation.x = - Math.PI / 2;
         terrain.visible = false;
         this.scene.add( terrain );
 
-        quadTarget.material = mlib[ 'heightmap' ];
-        this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
+        // quadTarget.material = mlib[ 'heightmap' ];
+        // this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
 
-        quadTarget.material = mlib[ 'normal' ];
-        this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
+        // quadTarget.material = mlib[ 'normal' ];
+        // this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
 
         var fLow = 0.1, fHigh = 0.8;
 
@@ -258,7 +263,7 @@ export class Main {
         var valNorm = ( lightVal - fLow ) / ( fHigh - fLow );
 
         // @ts-ignore: Unreachable code error
-        this.scene.background.setHSL( 0.1, 0.5, lightVal );
+        // this.scene.background.setHSL( 0.1, 0.5, lightVal );
         // this.scene.fog.color.setHSL( 0.1, 0.5, lightVal );
 
         directionalLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.1, 1.15 );
@@ -355,7 +360,7 @@ export class Main {
                     // console.log(intersects);
                     if (intersects.length > 0) {
                         // console.log(this.player.position);
-                        this.player.position.y = this.threeObject.position.y;
+                        // this.player.position.y = this.threeObject.position.y;
 
                         if (this.uniformsNoise && this.uniformsTerrain && this.player.position) {
                             this.uniformsNoise[ 'offset' ].value.y -= this.camera.getWorldDirection( vector ).z * 0.01;
@@ -364,11 +369,11 @@ export class Main {
                             this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.01;
                             this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
                 
-                            quadTarget.material = mlib[ 'heightmap' ];
-                            this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
+                            // quadTarget.material = mlib[ 'heightmap' ];
+                            // this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
                 
-                            quadTarget.material = mlib[ 'normal' ];
-                            this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
+                            // quadTarget.material = mlib[ 'normal' ];
+                            // this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
                         }
                     }
                 }
@@ -377,6 +382,9 @@ export class Main {
                 // }
             }
         }
+
+        if(uniforms2)
+        // uniforms2.time.value = 0.5*this.clock.elapsedTime;
 
         this.controls.update( delta );
         this.renderer.render(this.scene, this.camera)

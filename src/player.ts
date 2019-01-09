@@ -7,7 +7,7 @@ export class Player extends THREE.Object3D {
         console.log("Player");
         console.log(this);
         scene.add( this );
-        this.position.set(0,1500,0);
+        this.position.set(0,1000,0);
         this.add( camera );
     }
 
