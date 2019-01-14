@@ -9,7 +9,9 @@ export class Scene extends THREE.Scene {
         // this.add(axis);
 
         // this.background = new THREE.Color( 0x050505 );
-	    // this.fog = new THREE.Fog( 0x050505, 2000, 4000 );
+        // this.fog = new THREE.Fog( 0x050505, 2000, 4000 );
+        
+        this.fog = new THREE.Fog( 0x110000, 2000, 4000 );
 
         this.add( new THREE.GridHelper( 10, 10 ) );
 

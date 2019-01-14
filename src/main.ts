@@ -99,6 +99,8 @@ export class Main {
         // Hide loading text
         this.container.querySelector('#loading').style.display = 'none';
 
+        
+
 
         // LIGHTS
 
@@ -111,28 +113,8 @@ export class Main {
         pointLight = new THREE.PointLight( 0xff4400, 1.5 );
         pointLight.position.set( 0, 0, 0 );
         this.scene.add( pointLight );
-
-        // SCENE (RENDER TARGET)
-
-        sceneRenderTarget = new THREE.Scene();
-
-        cameraOrtho = new THREE.OrthographicCamera( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, - 10000, 10000 );
-        cameraOrtho.position.z = 1000;
-
-        sceneRenderTarget.add( cameraOrtho );
                 
-        // HEIGHT + NORMAL MAPS
-        // @ts-ignore: Unreachable code error
-        var normalShader = NormalMapShader;
-
-        var rx = 256, ry = 256;
-        var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
-
-        heightMap = new THREE.WebGLRenderTarget( rx, ry, pars );
-        heightMap.texture.generateMipmaps = false;
-
-        normalMap = new THREE.WebGLRenderTarget( rx, ry, pars );
-        normalMap.texture.generateMipmaps = false;
+       
 
         this.uniformsNoise = {
 
@@ -143,11 +125,24 @@ export class Main {
 
         };
 
-        uniformsNormal = THREE.UniformsUtils.clone( normalShader.uniforms );
+        // Add sky base 
+        var geometry2 = new THREE.SphereBufferGeometry(4000,32,32, Math.PI );
 
-        uniformsNormal.height.value = 0.05;
-        uniformsNormal.resolution.value.set( rx, ry );
-        uniformsNormal.heightMap.value = heightMap.texture;
+        // invert the geometry on the x-axis so that all of the faces point inward
+        geometry2.scale( - 1, 1, 1 );
+        var material2 = new THREE.ShaderMaterial( {
+
+            uniforms: this.uniformsNoise,
+            vertexShader: document.getElementById( 'vertSky' ).textContent,
+            fragmentShader: document.getElementById( 'fragSky' ).textContent
+        } );
+        // var material2 = new THREE.MeshBasicMaterial( {
+        //     color:'red'
+        // } );
+        // material.side = THREE.BackSide;
+        var mesh2 = new THREE.Mesh( geometry2, material2 );
+        this.scene.add( mesh2 );
+
 
         var vertexShader = document.getElementById( 'vertexShader' ).textContent;
 
@@ -160,8 +155,6 @@ export class Main {
         } );
         var textureLoader = new THREE.TextureLoader( loadingManager );
 
-        var specularMap = new THREE.WebGLRenderTarget( 2048, 2048, pars );
-        specularMap.texture.generateMipmaps = false;
 
         var diffuseTexture1 = textureLoader.load( "assets/grasslight-big.jpg" );
         var diffuseTexture2 = textureLoader.load( "assets/backgrounddetailed6.jpg" );
@@ -170,7 +163,6 @@ export class Main {
         diffuseTexture1.wrapS = diffuseTexture1.wrapT = THREE.RepeatWrapping;
         diffuseTexture2.wrapS = diffuseTexture2.wrapT = THREE.RepeatWrapping;
         detailTexture.wrapS = detailTexture.wrapT = THREE.RepeatWrapping;
-        specularMap.texture.wrapS = specularMap.texture.wrapT = THREE.RepeatWrapping;
 
         // TERRAIN SHADER
 
@@ -179,28 +171,8 @@ export class Main {
 
         this.uniformsTerrain = THREE.UniformsUtils.clone( terrainShader.uniforms );
 
-        this.uniformsTerrain[ 'tNormal' ].value = normalMap.texture;
-        this.uniformsTerrain[ 'uNormalScale' ].value = 20.5;
 
-        this.uniformsTerrain[ 'tDisplacement' ].value = heightMap.texture;
 
-        this.uniformsTerrain[ 'tDiffuse1' ].value = diffuseTexture1;
-        this.uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
-        this.uniformsTerrain[ 'tSpecular' ].value = specularMap.texture;
-        this.uniformsTerrain[ 'tDetail' ].value = detailTexture;
-
-        this.uniformsTerrain[ 'enableDiffuse1' ].value = true;
-        this.uniformsTerrain[ 'enableDiffuse2' ].value = true;
-        this.uniformsTerrain[ 'enableSpecular' ].value = true;
-
-        this.uniformsTerrain[ 'diffuse' ].value.setHex( 0xffffff );
-        this.uniformsTerrain[ 'specular' ].value.setHex( 0xffffff );
-
-        this.uniformsTerrain[ 'shininess' ].value = 30;
-
-        this.uniformsTerrain[ 'uDisplacementScale' ].value = 300;
-
-        this.uniformsTerrain[ 'uRepeatOverlay' ].value.set( 6, 6 );
 
         uniforms2 = {
             time: { value: 1.0 },
@@ -208,9 +180,7 @@ export class Main {
         }
 
         var params = [
-            [ 'heightmap', 	document.getElementById( 'fragmentShaderNoise' ).textContent, 	vertexShader, this.uniformsNoise, false ],
-            [ 'normal', 	normalShader.fragmentShader, normalShader.vertexShader, uniformsNormal, false ],
-            [ 'terrain', 	terrainShader.fragmentShader, terrainShader.vertexShader, this.uniformsTerrain, true ]
+            [ 'heightmap', 	document.getElementById( 'fragmentShaderNoise' ).textContent, 	vertexShader, this.uniformsNoise, false ]
             ];
 
         for ( var i = 0; i < params.length; i ++ ) {
@@ -236,7 +206,9 @@ export class Main {
 
         // TERRAIN MESH
 
-        var geometryTerrain = new THREE.PlaneBufferGeometry( 12000, 12000, 256, 256 );
+        var geometryTerrain = new THREE.PlaneBufferGeometry( 6000, 6000, 256, 256 );
+
+        let terrain2 = new THREE.Mesh( geometryTerrain, new THREE.MeshBasicMaterial( { color: 'red' } ));
         
         // @ts-ignore: Unreachable code error
         BufferGeometryUtils.computeTangents( geometryTerrain );
@@ -249,28 +221,10 @@ export class Main {
         terrain.rotation.x = - Math.PI / 2;
         terrain.visible = false;
         this.scene.add( terrain );
-
-        // quadTarget.material = mlib[ 'heightmap' ];
-        // this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
-
-        // quadTarget.material = mlib[ 'normal' ];
-        // this.renderer.render( sceneRenderTarget, cameraOrtho, normalMap, true );
-
-        var fLow = 0.1, fHigh = 0.8;
-
-        lightVal = THREE.Math.clamp( lightVal + 0.5 * 1 * lightDir, fLow, fHigh );
-
-        var valNorm = ( lightVal - fLow ) / ( fHigh - fLow );
-
-        // @ts-ignore: Unreachable code error
-        // this.scene.background.setHSL( 0.1, 0.5, lightVal );
-        // this.scene.fog.color.setHSL( 0.1, 0.5, lightVal );
-
-        directionalLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.1, 1.15 );
-        pointLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.9, 1.5 );
-
-        this.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( valNorm, 0, 1, 0.6, 3.5 );
-
+        terrain2.rotation.x = - Math.PI / 2;
+        terrain2.position.set(0,200,0);
+        this.scene.add(terrain2);
+        
         this.initPhysics();
 
         this.raycaster = new THREE.Raycaster();
