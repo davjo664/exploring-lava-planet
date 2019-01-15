@@ -320,10 +320,10 @@ export class Main {
                         // this.player.position.y = this.threeObject.position.y;
 
                         if (this.uniformsNoise && this.uniformsTerrain && this.player.position) {
-                            this.uniformsNoise[ 'offset' ].value.y -= this.camera.getWorldDirection( vector ).z * 0.01;
+                            this.uniformsNoise[ 'offset' ].value.y -= this.camera.getWorldDirection( vector ).z * 0.006;
                             this.uniformsTerrain[ 'uOffset' ].value.y = 4 * this.uniformsNoise[ 'offset' ].value.y;
                 
-                            this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.01;
+                            this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.006;
                             this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
 
                             this.uniformsNoise[ 'time' ].value = 0.5*this.clock.elapsedTime;
