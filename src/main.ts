@@ -126,13 +126,12 @@ export class Main {
         };
 
         // Add sky base 
-        var geometry2 = new THREE.SphereBufferGeometry(4000,32,32, Math.PI );
+        var geometry2 = new THREE.SphereBufferGeometry(6000,32,32, Math.PI );
 
         // invert the geometry on the x-axis so that all of the faces point inward
         geometry2.scale( - 1, 1, 1 );
         var material2 = new THREE.ShaderMaterial( {
-
-            uniforms: this.uniformsNoise,
+            uniforms: {},
             vertexShader: document.getElementById( 'vertSky' ).textContent,
             fragmentShader: document.getElementById( 'fragSky' ).textContent
         } );
@@ -208,7 +207,11 @@ export class Main {
 
         var geometryTerrain = new THREE.PlaneBufferGeometry( 6000, 6000, 256, 256 );
 
-        let terrain2 = new THREE.Mesh( geometryTerrain, new THREE.MeshBasicMaterial( { color: 'red' } ));
+        let terrain2 = new THREE.Mesh( geometryTerrain, new THREE.ShaderMaterial( {
+            uniforms: this.uniformsNoise,
+            vertexShader: document.getElementById( 'vertLava' ).textContent,
+            fragmentShader: document.getElementById( 'fragLava' ).textContent
+        }));
         
         // @ts-ignore: Unreachable code error
         BufferGeometryUtils.computeTangents( geometryTerrain );
@@ -322,6 +325,8 @@ export class Main {
                 
                             this.uniformsNoise[ 'offset' ].value.x += this.camera.getWorldDirection( vector ).x * 0.01;
                             this.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.uniformsNoise[ 'offset' ].value.x;
+
+                            this.uniformsNoise[ 'time' ].value = 0.5*this.clock.elapsedTime;
                 
                             // quadTarget.material = mlib[ 'heightmap' ];
                             // this.renderer.render( sceneRenderTarget, cameraOrtho, heightMap, true );
@@ -337,7 +342,7 @@ export class Main {
             }
         }
 
-        if(uniforms2)
+        // if(uniforms2)
         // uniforms2.time.value = 0.5*this.clock.elapsedTime;
 
         this.controls.update( delta );
