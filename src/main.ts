@@ -65,9 +65,9 @@ export class Main {
 
         this.uniformsNoise = {
             time: { value: 1.0 },
-            scale: { value: new THREE.Vector2( 3, 3 ) },
+            scale: { value: 500.0 },
             offset: { value: new THREE.Vector2( 0, 0 ) },
-            texture: { value: new THREE.TextureLoader().load( 'src/explosion.png' ) }
+            texture: { value: new THREE.TextureLoader().load( 'src/gradient.png' ) }
         };
 
         // SKY MESH
