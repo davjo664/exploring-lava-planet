@@ -67,7 +67,7 @@ export class Main {
             time: { value: 1.0 },
             scale: { value: 500.0 },
             offset: { value: new THREE.Vector2( 0, 0 ) },
-            texture: { value: new THREE.TextureLoader().load( 'src/gradient.png' ) }
+            texture: { value: new THREE.TextureLoader().load( 'assets/gradient.png' ) }
         };
 
         // SKY MESH
