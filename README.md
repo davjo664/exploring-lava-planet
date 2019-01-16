@@ -1,23 +1,12 @@
-# Typescript Three.js Webpack Starter
+# Exploring lava planet
 
-- Typescript support.
+Infinite planet generated using simplex noise and cellular noise.\
+Demo: https://davjo664.github.io/exploring-lava-planet/
+
+## Tools
+
+- WebGL
+- Three.js
+- Typescript
 - Webpack
-- Html plugin
 - BrowserSync
-
-## Usage
-
-### Install Typscript
-
-```
-npm install typescript -g
-```
-
-### Start
-
-```
-$ git clone https://github.com/davjo664/threejs-web-vr
-$ cd threejs-web-vr
-$ npm install # or yarn
-$ npm start
-```

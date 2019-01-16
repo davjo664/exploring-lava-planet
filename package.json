@@ -1,7 +1,7 @@
 {
-  "name": "threejs-web-vr",
+  "name": "exploring-lava-planet",
   "version": "1.0.0",
-  "description": "three.js + webvr + typescript",
+  "description": "Lava planet generated using simplex and cellular noise",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davjo664/threejs-web-vr"
+    "url": "git+https://github.com/davjo664/exploring-lava-planet"
   },
   "keywords": [],
   "author": "David Johansson",
   "license": "MIT",
-  "homepage": "https://github.com/davjo664/threejs-web-vr#readme",
+  "homepage": "https://github.com/davjo664/exploring-lava-planet#readme",
   "devDependencies": {
     "awesome-typescript-loader": "latest",
     "browser-sync": "latest",
